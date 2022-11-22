@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MiewZiek Paly</title>
-  </head>
-  <body>
+</head>
+
+<body>
     <!-- <audio
       id="audio"
       src="/media/rohman/DOCUMEN/Muziek/05 KERISPATIH - Kenyataan Perasaan/08 Tapi Bukan Aku.mp3"
@@ -16,38 +18,8 @@
     <button onclick="playIt()">Play</button>
     <button onclick="pauseIt()">Pause</button>
     <div class="timeSong"></div>
-    <script>
-      const myAudio = document.getElementById("audio");
-      const timeTrack = document.querySelector(".timeSong");
-      let isPlaying = false;
-      function playIt() {
-        isPlaying = true;
-        myAudio.play();
-      }
-
-      function pauseIt() {
-        isPlaying = false;
-        myAudio.pause();
-      }
-      myAudio.onplaying = () => {
-        setInterval(takeTime, 1000);
-      };
-
-      let time = 0;
-      let minute = 0;
-      function takeTime() {
-        let zero = "0";
-        if (time < 10) {
-          if (time == 6) {
-            time = 0;
-            minute++;
-          }
-          time = zero + time;
-        }
-
-        timeTrack.innerHTML = `${minute}:${time}`;
-        time++;
-      }
+    <script src="/script.js">
     </script>
-  </body>
+</body>
+
 </html>
