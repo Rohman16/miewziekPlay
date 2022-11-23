@@ -3,35 +3,38 @@ const timeTrack = document.querySelector(".timeSong");
 let isPlaying = false;
 
 function playIt() {
-    isPlaying = true;
-    myAudio.play();
+  isPlaying = true;
+  myAudio.play();
 }
 
 function pauseIt() {
-    isPlaying = false;
-    myAudio.pause();
+  isPlaying = false;
+  myAudio.pause();
 }
+let songPlay;
 myAudio.onplaying = () => {
-    if (!myAudio.onpause) {
-        setInterval(takeTime, 1000);
-    }
+  songPlay = setInterval(takeTime, 1000);
+};
+
+myAudio.onpause = () => {
+  clearInterval(songPlay);
 };
 
 let time = 0;
-let minute = 0;
+let timeMinute = 0;
 
 function takeTime() {
-    let zero = "0";
-    if (time < 10) {
-        if (time == 6) {
-            time = 0;
-            minute++;
-            if (minute < 10) {
-                minute = zero + minute;
-            }
-        }
-        time = zero + time;
-    }
-    timeTrack.innerHTML = `${minute}:${time}`;
-    time++;
+  let timeMinuteUse = "";
+  if (time == 60) {
+    time = 0;
+    timeMinute++;
+  }
+  if (time < 10) {
+    time = "0" + time;
+  }
+  if (timeMinute < 10) {
+    timeMinuteUse = "0" + timeMinute;
+  }
+  timeTrack.innerHTML = `${timeMinuteUse}:${time}`;
+  time++;
 }
