@@ -67,11 +67,30 @@ function takeTime() {
 }
 // const test = document.getElementById("test")
 sliderBar.oninput = () => {
+    clearInterval(songPlay)
+}
+sliderBar.onchange = () => {
+    let timeMinuteUse = 0;
+    let timeUse = 0;
     let barVal = 0;
-    barVal = sliderBar.value / slideStep;
-    sliderBar.value = barVal * slideStep;
+    // Determine Bar Value in Secondbar
+    // Put to barVal
+    barVal = sliderBar.value / slideStep; //in seconds
+
+    //update new position of the bar, with new time
+    // Convert to Bar Value form Seconds
+    slideMove = Math.floor(barVal * slideStep);
     myAudio.currentTime = barVal;
-    // test.innerHTML = barVal
+    timeMinuteUse = Math.floor(barVal / 60)
+    time = barVal % timeMinuteUse
+    if (time < 10) {
+        timeUse = "0" + time
+    } else {
+        timeUse = time;
+    }
+    timeTrack.innerHTML = `0${timeMinuteUse}:${timeUse}`
+    sliderBar.value = slideMove.toString();
+    setInterval(takeTime, 1000)
 };
 
 // sliderBar.oninput = () => {
