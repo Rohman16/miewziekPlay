@@ -2,20 +2,20 @@ const myAudio = document.getElementById("audio");
 const timeTrack = document.querySelector(".timeSong");
 const sliderBar = document.getElementById("timeSpan");
 let isPlaying = false;
-// let songPlay;
+let songPlay = 0;
 
 let time = 0;
 let timeOnSpot = 0;
+let timeSecond = 0;
 let timeSecond = 0;
 let timeMinute = 0;
 let timeDuration = 0;
 let slideMove = 0;
 let slideStep = 0;
-let songPlay = 0;
-let songTime = 0;
+myAudio.load();
 
 function playIt() {
-  // myAudio.currentTime = timeOn;
+  isPlaying = true;
   myAudio.play();
 }
 
@@ -32,9 +32,17 @@ function stopIt() {
   timeTrack.innerHTML = `00:00`;
 }
 
+let txt = 0;
+
+let timeBegin = myAudio.currentTime;
 myAudio.onplay = () => {
-  songPlay = setInterval(displayOn, 1000, myAudio.currentTime);
+  songPlay = setInterval(takeTime, 1000, slideStep, timeBegin);
 };
+
+function takeTime1(teme) {
+  txt += teme;
+  tezt.innerHTML = txt;
+}
 
 myAudio.onpause = () => {
   slideStep = 0;
@@ -45,18 +53,18 @@ myAudio.oncanplay = () => {
   sliderBar.value = 0;
   timeDuration = myAudio.duration;
   slideStep = 100 / timeDuration;
+  timeMinute = 0;
 };
 
-function displayOn(audTme) {
+function takeTime(audTime, begin) {
   let timeSecondUse = "";
-  //Check and separate the time (into Minutes & second)
-  if (audTme >= 60) {
-    timeSecond = Math.floor(audTme) % 60;
+  if (begin >= 60) {
+    timeSecond = Math.floor(begin) % 60;
     if (timeSecond == 0) {
       timeMinute++;
     }
   } else {
-    timeSecond = Math.floor(audTme);
+    timeSecond = Math.floor(begin);
   }
 
   if (timeSecond < 10) {
@@ -64,42 +72,18 @@ function displayOn(audTme) {
   } else {
     timeSecondUse = timeSecond;
   }
-  slideMove = (audTme / myAudio.duration) * 100;
-  sliderBar.value = slideMove.toString();
+
   timeTrack.innerHTML = `0${timeMinute}:${timeSecondUse}`;
-}
-
-function takeTime(audTme) {
-  let timeSecondUse = "";
-  songTime = audTme;
-  //Check and separate the time (into Minutes & second)
-  if (songTime >= 60) {
-    timeSecond = Math.floor(songTime) % 60;
-    if (timeSecond == 0) {
-      timeMinute++;
-    }
-  } else {
-    timeSecond = songTime;
-  }
-
-  timeSecond = Math.floor(timeSecond);
-
-  if (timeSecond < 10) {
-    timeSecondUse = "0" + timeSecond;
-  } else {
-    timeSecondUse = timeSecond;
-  }
-  slideMove = (audTme / myAudio.duration) * 100;
+  begin++;
+  slideMove += audTime;
   sliderBar.value = slideMove.toString();
-  timeTrack.innerHTML = `0${timeMinute}:${timeSecondUse}`;
 }
-
-// sliderBar.oninput = () => {
-//   myAudio.onplay = null;
-// };
-
+// const test = document.getElementById("test")
+sliderBar.oninput = () => {
+  clearInterval(songPlay);
+};
 sliderBar.onchange = () => {
-  timeOnSpot = sliderBar.value / slideStep;
   slideMove = sliderBar.value;
-  playIt(timeOnSpot);
+  myAudio.currentTime = sliderBar.value * slideStep;
+  playIt();
 };
