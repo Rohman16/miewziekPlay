@@ -33,11 +33,11 @@ function stopIt() {
 
 
 let txt = 0;
-let timeBegin = myAudio.currentTime
+
+let timeBegin = myAudio.currentTime;
 myAudio.onplay = () => {
     songPlay = setInterval(takeTime, 1000, slideStep, timeBegin);
 }
-
 
 function takeTime1(teme) {
     txt += teme;
@@ -58,12 +58,12 @@ myAudio.oncanplay = () => {
 function takeTime(audTime, begin) {
     let timeSecondUse = "";
     if (begin >= 60) {
-        timeSecond = Math.floor(begin / slideStep) % 60;
+        timeSecond = Math.floor(begin) % 60;
         if (timeSecond == 0) {
             timeMinute++;
         }
     } else {
-        timeSecond = Math.floor(begin / slideStep);
+        timeSecond = Math.floor(begin);
     }
 
     if (timeSecond < 10) {
@@ -73,9 +73,9 @@ function takeTime(audTime, begin) {
     }
 
     timeTrack.innerHTML = `0${timeMinute}:${timeSecondUse}`;
-
-    begin += audTime;
-    sliderBar.value = begin.toString();
+    begin++;
+    slideMove += audTime;
+    sliderBar.value = slideMove.toString();
 }
 // const test = document.getElementById("test")
 sliderBar.oninput = () => {
@@ -86,7 +86,3 @@ sliderBar.onchange = () => {
     myAudio.currentTime = sliderBar.value * slideStep
     playIt()
 };
-
-// sliderBar.oninput = () => {
-//   myAudio.currentTime = sliderBar.value;
-// };
