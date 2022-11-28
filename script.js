@@ -29,7 +29,7 @@ function stopIt() {
   clearInterval(songPlay);
   timeMinute = 0;
   timeSecond = 0;
-  slideMove = slideStep = sliderBar.value = myAudio.currentTime = 0;
+  slideMove = sliderBar.value = myAudio.currentTime = 0;
   timeTrack.innerHTML = `00:00`;
 }
 
@@ -76,16 +76,13 @@ function takeTime() {
   }
   sliderBar.value = slideMove.toString();
   timeTrack.innerHTML = `0${timeMinute}:${timeSecondUse}`;
-  begin++;
   slideMove = (begin / myAudio.duration) * 100;
 }
 
 // const test = document.getElementById("test")
-sliderBar.oninput = () => {
-  clearInterval(songPlay);
-};
+// 0
 sliderBar.onchange = () => {
   slideMove = sliderBar.value;
-  myAudio.currentTime = sliderBar.value * slideStep;
+  myAudio.currentTime = sliderBar.value / slideStep;
   playIt();
 };
