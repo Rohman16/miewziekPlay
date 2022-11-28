@@ -1,18 +1,21 @@
 const myAudio = document.getElementById("audio");
+const tezt = document.getElementById("test")
 const timeTrack = document.querySelector(".timeSong");
 const sliderBar = document.getElementById("timeSpan");
 let isPlaying = false;
-let songPlay;
+let songPlay = 0;
 
 let time = 0;
+let timeSecond = 0;
 let timeMinute = 0;
 let timeDuration = 0;
 let slideMove = 0;
 let slideStep = 0;
+myAudio.load()
+
 
 function playIt() {
     isPlaying = true;
-    // myAudio.load()
     myAudio.play();
 }
 
@@ -28,13 +31,18 @@ function stopIt() {
     timeTrack.innerHTML = `00:00`;
 }
 
-// myAudio.onplaying = () => {
-//   songPlay = setInterval(takeTime, 1000);
-// };
 
-myAudio.addEventListener("play", () => {
-    songPlay = setInterval(takeTime, 1000);
-})
+let txt = 0;
+let timeBegin = myAudio.currentTime
+myAudio.onplay = () => {
+    songPlay = setInterval(takeTime, 1000, slideStep, timeBegin);
+}
+
+
+function takeTime1(teme) {
+    txt += teme;
+    tezt.innerHTML = txt;
+}
 
 myAudio.onpause = () => {
     clearInterval(songPlay);
@@ -44,53 +52,39 @@ myAudio.oncanplay = () => {
     sliderBar.value = 0;
     timeDuration = myAudio.duration;
     slideStep = 100 / timeDuration;
-    time = 0;
     timeMinute = 0;
 };
 
-function takeTime() {
-    let timeMinuteUse = "";
-    if (time == 60) {
-        time = 0;
-        timeMinute++;
+function takeTime(audTime, begin) {
+    let timeSecondUse = "";
+    if (begin >= 60) {
+        timeSecond = Math.floor(begin / slideStep) % 60;
+        if (timeSecond == 0) {
+            timeMinute++;
+        }
+    } else {
+        timeSecond = Math.floor(begin / slideStep);
     }
-    if (time < 10) {
-        time = "0" + time;
+
+    if (timeSecond < 10) {
+        timeSecondUse = "0" + timeSecond;
+    } else {
+        timeSecondUse = timeSecond
     }
-    if (timeMinute < 10) {
-        timeMinuteUse = "0" + timeMinute;
-    }
-    timeTrack.innerHTML = `${timeMinuteUse}:${time}`;
-    time++;
-    slideMove += slideStep;
-    sliderBar.value = slideMove.toString();
+
+    timeTrack.innerHTML = `0${timeMinute}:${timeSecondUse}`;
+
+    begin += audTime;
+    sliderBar.value = begin.toString();
 }
 // const test = document.getElementById("test")
 sliderBar.oninput = () => {
-    clearInterval(songPlay)
+    clearInterval(songPlay);
 }
 sliderBar.onchange = () => {
-    let timeMinuteUse = 0;
-    let timeUse = 0;
-    let barVal = 0;
-    // Determine Bar Value in Secondbar
-    // Put to barVal
-    barVal = sliderBar.value / slideStep; //in seconds
-
-    //update new position of the bar, with new time
-    // Convert to Bar Value form Seconds
-    slideMove = Math.floor(barVal * slideStep);
-    myAudio.currentTime = barVal;
-    timeMinuteUse = Math.floor(barVal / 60)
-    time = barVal % timeMinuteUse
-    if (time < 10) {
-        timeUse = "0" + time
-    } else {
-        timeUse = time;
-    }
-    timeTrack.innerHTML = `0${timeMinuteUse}:${timeUse}`
-    sliderBar.value = slideMove.toString();
-    setInterval(takeTime, 1000)
+    slideMove = sliderBar.value
+    myAudio.currentTime = sliderBar.value * slideStep
+    playIt()
 };
 
 // sliderBar.oninput = () => {
