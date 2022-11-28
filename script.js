@@ -7,16 +7,17 @@ let songPlay = 0;
 let time = 0;
 let timeOnSpot = 0;
 let timeSecond = 0;
-let timeSecond = 0;
 let timeMinute = 0;
 let timeDuration = 0;
 let slideMove = 0;
 let slideStep = 0;
 myAudio.load();
+let timeBegin = 0;
 
 function playIt() {
   isPlaying = true;
   myAudio.play();
+  songPlay = setInterval(takeTime, 1000);
 }
 
 function pauseIt() {
@@ -34,10 +35,9 @@ function stopIt() {
 
 let txt = 0;
 
-let timeBegin = myAudio.currentTime;
-myAudio.onplay = () => {
-  songPlay = setInterval(takeTime, 1000, slideStep, timeBegin);
-};
+// function displayOn(timeX) {
+//   songPlay = setInterval(takeTime, 1000, timeX);
+// }
 
 function takeTime1(teme) {
   txt += teme;
@@ -56,11 +56,13 @@ myAudio.oncanplay = () => {
   timeMinute = 0;
 };
 
-function takeTime(audTime, begin) {
+function takeTime() {
+  let begin = myAudio.currentTime;
   let timeSecondUse = "";
   if (begin >= 60) {
     timeSecond = Math.floor(begin) % 60;
     if (timeSecond == 0) {
+      timeSecond = 0;
       timeMinute++;
     }
   } else {
@@ -72,12 +74,12 @@ function takeTime(audTime, begin) {
   } else {
     timeSecondUse = timeSecond;
   }
-
+  sliderBar.value = slideMove.toString();
   timeTrack.innerHTML = `0${timeMinute}:${timeSecondUse}`;
   begin++;
-  slideMove += audTime;
-  sliderBar.value = slideMove.toString();
+  slideMove = (begin / myAudio.duration) * 100;
 }
+
 // const test = document.getElementById("test")
 sliderBar.oninput = () => {
   clearInterval(songPlay);
