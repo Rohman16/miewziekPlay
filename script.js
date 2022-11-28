@@ -2,41 +2,42 @@ const myAudio = document.getElementById("audio");
 const timeTrack = document.querySelector(".timeSong");
 const sliderBar = document.getElementById("timeSpan");
 let isPlaying = false;
-let songPlay;
+// let songPlay;
 
 let time = 0;
+let timeOnSpot = 0;
+let timeSecond = 0;
 let timeMinute = 0;
 let timeDuration = 0;
 let slideMove = 0;
 let slideStep = 0;
+let songPlay = 0;
+let songTime = 0;
 
 function playIt() {
-  isPlaying = true;
-  // myAudio.load()
+  // myAudio.currentTime = timeOn;
   myAudio.play();
 }
 
 function pauseIt() {
-  isPlaying = false;
   myAudio.pause();
 }
 
 function stopIt() {
-  isPlaying = false;
   myAudio.pause();
-  slideMove = sliderBar.value = myAudio.currentTime = 0;
+  clearInterval(songPlay);
+  timeMinute = 0;
+  timeSecond = 0;
+  slideMove = slideStep = sliderBar.value = myAudio.currentTime = 0;
   timeTrack.innerHTML = `00:00`;
 }
 
-// myAudio.onplaying = () => {
-//   songPlay = setInterval(takeTime, 1000);
-// };
-
-myAudio.addEventListener("play", () => {
-  songPlay = setInterval(takeTime, 1000);
-});
+myAudio.onplay = () => {
+  songPlay = setInterval(displayOn, 1000, myAudio.currentTime);
+};
 
 myAudio.onpause = () => {
+  slideStep = 0;
   clearInterval(songPlay);
 };
 
@@ -44,36 +45,61 @@ myAudio.oncanplay = () => {
   sliderBar.value = 0;
   timeDuration = myAudio.duration;
   slideStep = 100 / timeDuration;
-  time = 0;
-  timeMinute = 0;
 };
 
-function takeTime() {
-  let timeMinuteUse = "";
-  if (time == 60) {
-    time = 0;
-    timeMinute++;
+function displayOn(audTme) {
+  let timeSecondUse = "";
+  //Check and separate the time (into Minutes & second)
+  if (audTme >= 60) {
+    timeSecond = Math.floor(audTme) % 60;
+    if (timeSecond == 0) {
+      timeMinute++;
+    }
+  } else {
+    timeSecond = Math.floor(audTme);
   }
-  if (time < 10) {
-    time = "0" + time;
+
+  if (timeSecond < 10) {
+    timeSecondUse = "0" + timeSecond;
+  } else {
+    timeSecondUse = timeSecond;
   }
-  if (timeMinute < 10) {
-    timeMinuteUse = "0" + timeMinute;
-  }
-  timeTrack.innerHTML = `${timeMinuteUse}:${time}`;
-  time++;
-  slideMove += slideStep;
+  slideMove = (audTme / myAudio.duration) * 100;
   sliderBar.value = slideMove.toString();
+  timeTrack.innerHTML = `0${timeMinute}:${timeSecondUse}`;
 }
-// const test = document.getElementById("test")
-sliderBar.onchange = () => {
-  let barVal = 0;
-  barVal = sliderBar.value / slideStep;
-  sliderBar.value = barVal * slideStep;
-  myAudio.currentTime = barVal;
-  // test.innerHTML = barVal
-};
+
+function takeTime(audTme) {
+  let timeSecondUse = "";
+  songTime = audTme;
+  //Check and separate the time (into Minutes & second)
+  if (songTime >= 60) {
+    timeSecond = Math.floor(songTime) % 60;
+    if (timeSecond == 0) {
+      timeMinute++;
+    }
+  } else {
+    timeSecond = songTime;
+  }
+
+  timeSecond = Math.floor(timeSecond);
+
+  if (timeSecond < 10) {
+    timeSecondUse = "0" + timeSecond;
+  } else {
+    timeSecondUse = timeSecond;
+  }
+  slideMove = (audTme / myAudio.duration) * 100;
+  sliderBar.value = slideMove.toString();
+  timeTrack.innerHTML = `0${timeMinute}:${timeSecondUse}`;
+}
 
 // sliderBar.oninput = () => {
-//   myAudio.currentTime = sliderBar.value;
+//   myAudio.onplay = null;
 // };
+
+sliderBar.onchange = () => {
+  timeOnSpot = sliderBar.value / slideStep;
+  slideMove = sliderBar.value;
+  playIt(timeOnSpot);
+};
